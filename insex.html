@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        #acceptTermsContainer {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        #acceptTerms {
+            margin-right: 8px;
+        }
+
+        #submitBtn {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        #validationMessage {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #entries {
+            margin-top: 20px;
+        }
+
+        #entries h2 {
+            text-align: center;
+        }
+
+        #entryDetails {
+            margin-top: 10px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #entryDetails th, #entryDetails td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #entryDetails th {
+            background-color: #4caf50;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Registration Form</h2>
+
+    <form id="registrationForm" onsubmit="return validateForm()">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+
+        <div id="validationMessage"></div>
+
+        <div id="acceptTermsContainer">
+            <input type="checkbox" id="acceptTerms" required>
+            <label for="acceptTerms">Accept Terms and Conditions</label>
+        </div>
+
+        <button type="submit" id="submitBtn">Submit</button>
+    </form>
+
+</div>
+
+<div id="entries" class="container">
+    <h2>Entries</h2>
+
+    <table id="entryDetails">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>DOB</th>
+            <th>Acceptance of T&C</th>
+        </tr>
+    </table>
+</div>
+
+<script>
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var dob = new Date(document.getElementById('dob').value);
+        var acceptTerms = document.getElementById('acceptTerms').checked;
+
+        var validationMessage = document.getElementById('validationMessage');
+
+        if (name === '' || email === '' || password === '' || !dob || !acceptTerms) {
+            validationMessage.innerHTML = 'Please fill in all fields and accept terms and conditions.';
+            validationMessage.style.display = 'block';
+            return false;
+        }
+
+        var age = calculateAge(dob);
+
+        if (age < 18 || age > 55) {
+            validationMessage.innerHTML = 'You are not eligible. Age must be between 18 and 55.';
+            validationMessage.style.display = 'block';
+            return false;
+        }
+
+        // If all validations pass, the form will be submitted
+        displayEntryDetails(name, email, password, dob.toLocaleDateString(), acceptTerms);
+        return true;
+    }
+
+    function calculateAge(dob) {
+        var today = new Date();
+        var birthDate = new Date(dob);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var monthDiff = today.getMonth() - birthDate.getMonth();
+        
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age;
+    }
+
+    function displayEntryDetails(name, email, password, dob, acceptTerms) {
+        var table = document.getElementById('entryDetails');
+        var newRow = table.insertRow(-1);
+
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+        var cell4 = newRow.insertCell(3);
+        var cell5 = newRow.insertCell(4);
+
+        cell1.innerHTML = name;
+        cell2.innerHTML = email;
+        cell3.innerHTML = password;
+        cell4.innerHTML = dob;
+        cell5.innerHTML = acceptTerms ? 'Yes' : 'No';
+    }
+</script>
+
+</body>
+</html>
